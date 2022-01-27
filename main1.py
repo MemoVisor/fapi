@@ -1,23 +1,32 @@
+import urllib
+
+import requests
 import telebot
 
-bot = telebot.TeleBot("5126809018:AAE_NN_JWcn70WGPhSbKC142ajQbyM4lmzI")
+token = "5126809018:AAE_NN_JWcn70WGPhSbKC142ajQbyM4lmzI"
+bot = telebot.TeleBot(token)
 
 URL = ''
+MEME_NAME = "meme.jpg"
 
 
 def validate_url(message):
-    return True
+    image_formats = ("image/png", "image/jpeg", "image/jpg")
+    try:
+        request_header = requests.head(message.text)
+        is_image = request_header.headers["content-type"] in image_formats
+        return is_image
+    except:
+        return False
 
 
 @bot.message_handler(content_types=['photo'])
 def handle_photo(message):
-    print(f'message.photo = {message.photo}')
     fileID = message.photo[-1].file_id
-    print(f'fileID = {fileID}')
     file = bot.get_file(fileID)
-    print(f'file.file_path = {file.file_path}')
-
-    bot.send_message(message.chat.id, message)
+    url_photo = f"https://api.telegram.org/file/bot{token}/{file.file_path}"
+    urllib.request.urlretrieve(url_photo, f"memes/{MEME_NAME}")
+    bot.send_message(message.chat.id, url_photo)
 
 
 @bot.message_handler(func=validate_url, content_types=['text'])
