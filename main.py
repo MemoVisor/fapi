@@ -1,4 +1,8 @@
 import telebot
+from fastapi import FastAPI
+
+app = FastAPI()
+
 
 bot = telebot.TeleBot("5126809018:AAE_NN_JWcn70WGPhSbKC142ajQbyM4lmzI")
 
@@ -25,6 +29,10 @@ def handle_text(message):
     URL = message.text
     bot.reply_to(message, URL)
 
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
 if __name__ == '__main__':
     bot.infinity_polling()
