@@ -3,7 +3,8 @@ import urllib
 import requests
 import telebot
 from fastapi import FastAPI
-from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -41,9 +42,12 @@ def handle_text(message):
     bot.reply_to(message, "Much nice")
 
 
+app.mount("/memes", StaticFiles(directory="memes"), name="memes")
+
+
 @app.get("/")
 async def root():
-    return FileResponse(MEME_PATH)
+    return JSONResponse(content={"url": f"https://memovisor.saritasa.io/{MEME_PATH}"})
 
 if __name__ == '__main__':
     bot.infinity_polling()
