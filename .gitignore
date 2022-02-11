@@ -1,5 +1,6 @@
 .idea/
 memes/
+docs/
 .venv/
 .python-version
 *.pyc

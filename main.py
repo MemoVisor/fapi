@@ -15,6 +15,8 @@ bot = telebot.TeleBot(token)
 URL = ''
 MEME_NAME = "meme.jpg"
 MEME_PATH = f"memes/{MEME_NAME}"
+MEME_DOC_NAME = "meme"
+MEME_DOC_PATH = f"docs/{MEME_DOC_NAME}"
 
 
 def validate_url(message):
@@ -33,6 +35,16 @@ def handle_photo(message):
     file = bot.get_file(fileID)
     url_photo = f"https://api.telegram.org/file/bot{token}/{file.file_path}"
     urllib.request.urlretrieve(url_photo, MEME_PATH)
+    bot.reply_to(message, "Much nice")
+
+
+@bot.message_handler(content_types=['document'])
+def handle_text_doc(message):
+    file_info = bot.get_file(message.document.file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
+    ext = message.document.file_name.split('.')[-1]
+    with open(f"{MEME_DOC_PATH}.{ext}", "wb") as new_file:
+        new_file.write(downloaded_file)
     bot.reply_to(message, "Much nice")
 
 
